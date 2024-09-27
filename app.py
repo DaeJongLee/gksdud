@@ -6,21 +6,19 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QObject, pyqtSignal
 from pynput import keyboard
 import pyperclip
-import time
 
 class Signals(QObject):
     convert_signal = pyqtSignal(str)
-
 class LanguageSwitcher:
     def __init__(self):
         self.app = QApplication(sys.argv)
         self.tray_icon = QSystemTrayIcon(QIcon("icon.png"), self.app)
         self.create_tray_icon()
         self.init_hotkey()
-        self.is_selecting = False
         self.keyboard_controller = keyboard.Controller()
         self.signals = Signals()
         self.signals.convert_signal.connect(self.convert_text)
+        self.selected_text = None
 
     def create_tray_icon(self):
         menu = QMenu()
@@ -37,32 +35,33 @@ class LanguageSwitcher:
         self.listener.start()
 
     def on_activate(self):
-        if not self.is_selecting:
-            self.select_block()
+        if self.selected_text is None:
+            self.get_selected_text()
         else:
             self.convert_selected_text()
-        self.is_selecting = not self.is_selecting
 
-    def select_block(self):
-        with self.keyboard_controller.pressed(keyboard.Key.shift, keyboard.Key.alt):
-            self.keyboard_controller.press(keyboard.Key.left)
-            self.keyboard_controller.release(keyboard.Key.left)
-        print("블록이 선택되었습니다. 다시 단축키를 눌러 변환하세요.")
-
-    def convert_selected_text(self):
+    def get_selected_text(self):
         with self.keyboard_controller.pressed(keyboard.Key.cmd):
             self.keyboard_controller.press('c')
             self.keyboard_controller.release('c')
         
-        # Use threading instead of QTimer
-        threading.Timer(0.1, self.process_clipboard).start()
+        threading.Timer(0.2, self.process_clipboard).start()
 
     def process_clipboard(self):
-        text = pyperclip.paste()
-        if text:
-            self.signals.convert_signal.emit(text)
+        self.selected_text = pyperclip.paste()
+        if self.selected_text and not self.selected_text.isspace():
+            print(f"현재 선택된 블록은 [{self.selected_text}] 입니다. 변환하시려면 한번 더 단축키를 입력해주세요.")
         else:
-            print("선택된 텍스트가 없거나 복사에 실패했습니다.")
+            print("선택된 텍스트가 없습니다. 텍스트를 선택한 후 다시 시도해주세요.")
+            self.selected_text = None
+
+    def convert_selected_text(self):
+        if self.selected_text and not self.selected_text.isspace():
+            self.signals.convert_signal.emit(self.selected_text)
+            self.selected_text = None
+        else:
+            print("변환할 텍스트가 없습니다. 먼저 텍스트를 선택해주세요.")
+            self.selected_text = None
 
     def convert_text(self, text):
         result = subprocess.run(['python', 'converter.py', text], capture_output=True, text=True)
@@ -70,6 +69,9 @@ class LanguageSwitcher:
 
         if converted_text:
             pyperclip.copy(converted_text)
+            
+            self.keyboard_controller.press(keyboard.Key.backspace)
+            self.keyboard_controller.release(keyboard.Key.backspace)
             
             with self.keyboard_controller.pressed(keyboard.Key.cmd):
                 self.keyboard_controller.press('v')
@@ -85,7 +87,7 @@ class LanguageSwitcher:
     def exit_app(self):
         self.listener.stop()
         self.app.quit()
-
+        
 if __name__ == "__main__":
     switcher = LanguageSwitcher()
     switcher.run()
