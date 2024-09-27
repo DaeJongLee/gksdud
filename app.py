@@ -6,6 +6,8 @@ from PyQt5.QtGui import QIcon, QFont, QCursor
 from PyQt5.QtCore import QObject, pyqtSignal, Qt, QTimer
 from pynput import keyboard, mouse
 import pyperclip
+import accessibility_helper
+
 
 class Signals(QObject):
     convert_signal = pyqtSignal(str)
@@ -25,7 +27,7 @@ class LanguageSwitcher:
         self.selected_text = None
         
         # 툴팁 폰트 설정
-        QToolTip.setFont(QFont('SansSerif', 18))
+        QToolTip.setFont(QFont('Arial', 18))
 
     def create_tray_icon(self):
         menu = QMenu()
@@ -111,5 +113,9 @@ class LanguageSwitcher:
         self.app.quit()
 
 if __name__ == "__main__":
-    switcher = LanguageSwitcher()
-    switcher.run()
+    if accessibility_helper.ensure_accessibility_permission():
+        switcher = LanguageSwitcher()
+        switcher.run()
+    else:
+        print("필요한 권한이 부여되지 않아 애플리케이션을 종료합니다.")
+        sys.exit(1)
