@@ -1,5 +1,11 @@
 <img src="assets/icon.png" alt="simbol">
 
+todo list 
+- [ ] win 지원
+- [ ] linux 지원 
+- [ ] 키보드 매핑 기능 추가
+- [ ] 혼합 컨버팅 기능 추가
+
 # gksdud 
 ### 한글/영어 키보드 입력 전환기
 
@@ -17,7 +23,7 @@
 
 1. 저장소를 클론합니다:
    ```
-   git clone https://github.com/yourusername/gksdud.git
+   git clone https://github.com/DaeJongLee/gksdud.git
    cd gksdud
    ```
 
