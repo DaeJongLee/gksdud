@@ -32,3 +32,5 @@ build/
 # Application specific
 icon.png
 icon.icns
+
+*.sh
