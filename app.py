@@ -25,7 +25,7 @@ class LanguageSwitcher:
         self.selected_text = None
         
         # 툴팁 폰트 설정
-        QToolTip.setFont(QFont('SansSerif', 20))
+        QToolTip.setFont(QFont('SansSerif', 18))
 
     def create_tray_icon(self):
         menu = QMenu()
@@ -63,11 +63,16 @@ class LanguageSwitcher:
     def process_clipboard(self):
         self.selected_text = pyperclip.paste()
         if self.selected_text and not self.selected_text.isspace():
-            message = f"선택됨: [{self.selected_text}]\n변환하려면 Ctrl+Shift+L을 다시 누르세요"
+            preview = self.get_preview_conversion(self.selected_text)
+            message = f"선택한 내용 --- {self.selected_text}\n바뀌게 될 내용 --- {preview}\n변환하시려면 단축키를 누르세요"
             self.signals.update_status_signal.emit(message)
         else:
             self.signals.update_status_signal.emit("선택된 텍스트가 없습니다")
             self.selected_text = None
+
+    def get_preview_conversion(self, text):
+        result = subprocess.run(['python', 'converter.py', text], capture_output=True, text=True)
+        return result.stdout.strip()
 
     def convert_selected_text(self):
         if self.selected_text and not self.selected_text.isspace():
@@ -90,8 +95,8 @@ class LanguageSwitcher:
                 self.keyboard_controller.press('v')
                 self.keyboard_controller.release('v')
             
-            message = f"변환 완료: [{text}] -> [{converted_text}]"
-            self.signals.update_status_signal.emit(message)
+            # message = f"변환 완료: [{text}] -> [{converted_text}]"
+            # self.signals.update_status_signal.emit(message)
         else:
             self.signals.update_status_signal.emit("변환 실패")
         
