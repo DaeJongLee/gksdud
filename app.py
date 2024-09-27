@@ -14,7 +14,7 @@ class Signals(QObject):
 class LanguageSwitcher:
     def __init__(self):
         self.app = QApplication(sys.argv)
-        self.tray_icon = QSystemTrayIcon(QIcon("icon.png"), self.app)
+        self.tray_icon = QSystemTrayIcon(QIcon("assets/icon.icns"), self.app)
         self.create_tray_icon()
         self.init_hotkey()
         self.keyboard_controller = keyboard.Controller()

@@ -28,9 +28,3 @@ build/
 # PyQt5
 *.qmlc
 *.jsc
-
-# Application specific
-icon.png
-icon.icns
-
-*.sh
