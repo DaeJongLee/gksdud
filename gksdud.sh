@@ -7,25 +7,33 @@ cd "$SCRIPT_DIR" || exit
 # 가상 환경 경로 설정
 VENV_PATH=".venv"
 
-# 가상 환경 활성화
-if [ -d "$VENV_PATH" ]; then
-    echo "가상 환경을 활성화합니다..."
-    source "$VENV_PATH/bin/activate"
-else
-    echo "오류: 가상 환경을 찾을 수 없습니다. 가상 환경을 생성해 주세요."
+# Python이 설치되어 있는지 확인
+if ! command -v python3 &> /dev/null; then
+    echo "Python3가 설치되어 있지 않습니다. 먼저 Python3를 설치해 주세요."
     exit 1
 fi
 
-# 필요한 패키지가 설치되어 있는지 확인
-if ! python -c "import PyQt5" &> /dev/null; then
-    echo "필요한 패키지를 설치합니다..."
-    pip install -r requirements.txt
+# 가상 환경이 없으면 생성
+if [ ! -d "$VENV_PATH" ]; then
+    echo "가상 환경을 생성합니다..."
+    python3 -m venv "$VENV_PATH"
 fi
+
+# 가상 환경 활성화
+echo "가상 환경을 활성화합니다..."
+source "$VENV_PATH/bin/activate"
+
+# pip 업그레이드
+pip install --upgrade pip
+
+# 필요한 패키지 설치
+echo "필요한 패키지를 설치합니다..."
+pip install -r requirements.txt
 
 # 메인 스크립트 실행
 echo "gksdud 애플리케이션을 시작합니다..."
-echo "잠시후 터미널이 종료되고 애플리케이션이 백그라운드에서 실행됩니다..."
-sleep 2
+echo "3초 후 터미널이 종료되고 애플리케이션이 백그라운드에서 실행됩니다..."
+sleep 3
 
 # nohup을 사용하여 백그라운드에서 실행하고 출력을 /dev/null로 리다이렉트
 nohup python main.py > /dev/null 2>&1 &
