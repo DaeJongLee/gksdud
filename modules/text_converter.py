@@ -68,3 +68,9 @@ class TextConverter:
         cursor = QCursor.pos()
         QToolTip.showText(cursor, message)
         QTimer.singleShot(3000, QToolTip.hideText)
+
+    def __del__(self):
+        if hasattr(self, 'keyboard_controller'):
+            del self.keyboard_controller
+
+            

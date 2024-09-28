@@ -17,7 +17,7 @@ class LanguageSwitcher:
         self.signals.convert_signal.connect(self.text_converter.convert_text)
         self.signals.update_status_signal.connect(self.show_tooltip)
         
-        QToolTip.setFont(QFont('SansSerif', 18))
+        QToolTip.setFont(QFont('Arial', 18))
 
     def on_activate(self):
         self.text_converter.handle_activation()
@@ -29,9 +29,6 @@ class LanguageSwitcher:
         self.tray_icon.show()
         sys.exit(self.app.exec_())
 
-    def exit_app(self):
-        self.hotkey_manager.stop()
-        self.app.quit()
 
     def about_gksdud(self):
         QMessageBox.about(None, "About gksdud", 
@@ -47,7 +44,7 @@ class LanguageSwitcher:
         1. 변환하고 싶은 텍스트를 선택합니다.
         2. Ctrl + Shift + L을 누릅니다.
         3. 선택한 텍스트와 변환될 내용이 툴팁으로 표시됩니다.
-        4. 변환을 원하면 다시 Ctrl + Shift + L을 누릅니다.
+        4. 변환을 원하면 다시 Ctrl + Shift + L을 누릅니다. 
         5. 선택한 텍스트가 변환되어 붙여넣어집니다.
         """
         QMessageBox.information(None, "사용법", usage_text)
@@ -55,3 +52,9 @@ class LanguageSwitcher:
     # def show_settings(self):
     #     # Placeholder for settings functionality
     #     QMessageBox.information(None, "Settings", "Settings functionality coming soon!")
+
+    def exit_app(self):
+        self.hotkey_manager.stop()
+        # self.tray_icon.hide()
+        self.app.quit()
+        sys.exit(0)

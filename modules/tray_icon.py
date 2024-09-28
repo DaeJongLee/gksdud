@@ -32,3 +32,5 @@ class TrayIcon(QSystemTrayIcon):
         menu.addAction(exit_action)
 
         self.setContextMenu(menu)
+
+        
