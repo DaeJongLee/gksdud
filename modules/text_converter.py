@@ -6,7 +6,8 @@ from PyQt5.QtCore import QTimer
 from pynput import keyboard
 import os
 import sys
-from AppKit import NSPasteboard, NSStringPboardType
+import AppKit 
+from AppKit import NSPasteboard, NSStringPboardType  # type: ignore # 추가된 임포트
 
 class TextConverter:
     def __init__(self, signals):
