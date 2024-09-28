@@ -9,7 +9,7 @@ VENV_PATH=".venv"
 
 # Python이 설치되어 있는지 확인
 if ! command -v python3 &> /dev/null; then
-    echo "Python3가 설치되어 있지 않습니다. 먼저 Python3를 설치해 주세요."
+    echo "Error: Python3가 설치되어 있지 않습니다. 먼저 Python3를 설치해 주세요."
     exit 1
 fi
 
@@ -20,15 +20,15 @@ if [ ! -d "$VENV_PATH" ]; then
 fi
 
 # 가상 환경 활성화
-echo "가상 환경을 활성화합니다..."
 source "$VENV_PATH/bin/activate"
 
-# pip 업그레이드
-pip install --upgrade pip
-
-# 필요한 패키지 설치
-echo "필요한 패키지를 설치합니다..."
-pip install -r requirements.txt
+# 필요한 패키지가 설치되어 있는지 확인
+if ! python -c "import PyQt5" &> /dev/null; then
+    echo "필요한 패키지를 설치합니다..."
+    pip install -r requirements.txt
+else
+    echo "필요한 패키지가 이미 설치되어 있습니다."
+fi
 
 # 메인 스크립트 실행
 echo "gksdud 애플리케이션을 시작합니다..."
