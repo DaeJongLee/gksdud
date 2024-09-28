@@ -17,7 +17,7 @@ def main():
     language_switcher = LanguageSwitcher(app)
 
     # Create tray icon
-    tray_icon = TrayIcon(app, language_switcher.about_gksdud, language_switcher.show_usage,language_switcher.exit_app,)
+    tray_icon = TrayIcon(app,language_switcher.exit_app, language_switcher.about_gksdud, language_switcher.show_usage)
 
     # Run the application
     language_switcher.run()
