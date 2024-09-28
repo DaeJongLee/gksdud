@@ -15,20 +15,16 @@ class LanguageSwitcher:
         self.text_converter = TextConverter(self.signals)
 
         self.signals.convert_signal.connect(self.text_converter.convert_text)
-        self.signals.update_status_signal.connect(self.show_tooltip)
+        self.signals.update_status_signal.connect(self.text_converter.show_tooltip)
         
         QToolTip.setFont(QFont('Arial', 18))
 
     def on_activate(self):
         self.text_converter.handle_activation()
 
-    def show_tooltip(self, message):
-        self.text_converter.show_tooltip(message)
-
     def run(self):
         self.tray_icon.show()
         sys.exit(self.app.exec_())
-
 
     def about_gksdud(self):
         QMessageBox.about(None, "About gksdud", 
@@ -49,12 +45,7 @@ class LanguageSwitcher:
         """
         QMessageBox.information(None, "사용법", usage_text)
 
-    # def show_settings(self):
-    #     # Placeholder for settings functionality
-    #     QMessageBox.information(None, "Settings", "Settings functionality coming soon!")
-
     def exit_app(self):
         self.hotkey_manager.stop()
-        # self.tray_icon.hide()
         self.app.quit()
         sys.exit(0)
